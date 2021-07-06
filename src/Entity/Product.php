@@ -181,6 +181,7 @@ class Product
 
     public function __construct(array $productData)
     {
+        $now = new \DateTimeImmutable('now');
         $this->setName($productData['Product Name'])
         ->setCode($productData['Product Code'])
         ->setDescription($productData['Product Description'])

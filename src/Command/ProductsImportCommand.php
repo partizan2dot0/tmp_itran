@@ -81,9 +81,9 @@ class ProductsImportCommand extends Command
         }
 
         $output->writeln("<info>Counters:</info>");
-        $output->writeln("Records processed: ".$this->processedCount);
-        $output->writeln("Records inserted: ".$this->successCount);
-        $output->writeln("Records skipped: ".$this->skippedCount);
+        $output->writeln("Records processed: ".$parser->getCounter('processedCount'));
+        $output->writeln("Records inserted: ".$parser->getCounter('successCount'));
+        $output->writeln("Records skipped: ".$parser->getCounter('skippedCount'));
 
         if ($parser->getCounter('skippedCount') > 0) {
             $output->writeln("<error>Skipped records:</error>");
