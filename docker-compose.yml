@@ -5,12 +5,14 @@ services:
     hostname: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: importtest
+      MYSQL_DATABASE: importTest
       MYSQL_USER: dev
       MYSQL_PASSWORD: dev
       VIRTUAL_HOST: mysql.dev.loc
     ports:
       - "3306:3306"
+    volumes:
+      - ./docker:/docker-entrypoint-initdb.d
   php-fpm:
     image: webdevops/php-dev:7.4
     hostname: php-fpm
