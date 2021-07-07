@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\Types\Self_;
 
 /**
  * @ORM\Table(name="tblProductData")
@@ -137,10 +136,10 @@ class Product
 
     private function setDiscontinued(string $discontinued): self
     {
-        if ($discontinued === 'yes'){
+        if ('yes' === $discontinued) {
             $this->discontinued = new \DateTimeImmutable('now');     //if discontinued setting current date
         } else {
-            $this->discounted = null;
+            $this->discontinued = null;
         }
 
         return $this;
@@ -170,12 +169,13 @@ class Product
         return $this;
     }
 
-    public static function checkConditions(array  $productData): bool  // Import Rules implementation
+    public static function checkConditions(array $productData): bool  // Import Rules implementation
     {
-        if ( ((float)$productData['Cost in GBP'] < self::MIN_COST && (int)$productData['Stock'] < self::MIN_STOCK)
-          || ((float)$productData['Cost in GBP'] > self::MAX_COST) ) {
+        if (((float) $productData['Cost in GBP'] < self::MIN_COST && (int) $productData['Stock'] < self::MIN_STOCK)
+          || ((float) $productData['Cost in GBP'] > self::MAX_COST)) {
             return true;
         }
+
         return false;
     }
 
@@ -185,12 +185,10 @@ class Product
         $this->setName($productData['Product Name'])
         ->setCode($productData['Product Code'])
         ->setDescription($productData['Product Description'])
-        ->setCost((float)$productData['Cost in GBP'])
-        ->setStock((int)$productData['Stock'])
+        ->setCost((float) $productData['Cost in GBP'])
+        ->setStock((int) $productData['Stock'])
         ->setAdded($now)
         ->setDiscontinued($productData['Discontinued'])
         ->setUpdated($now);
     }
-
-
 }

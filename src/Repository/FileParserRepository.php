@@ -9,7 +9,6 @@ use League\Csv\Reader;
 
 class FileParserRepository extends ServiceEntityRepository
 {
-
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, FileParser::class);
@@ -20,9 +19,10 @@ class FileParserRepository extends ServiceEntityRepository
         if (file_exists($filePath)) {
             $reader = Reader::createFromPath($filePath);
             $result = $reader->fetchAssoc();
+
             return $result;
         } else {
-            return ["error" => "File does not exist. File path = $filePath "];
+            return ['error' => "File does not exist. File path = $filePath "];
         }
     }
 
@@ -30,5 +30,4 @@ class FileParserRepository extends ServiceEntityRepository
     {
         return [];
     }
-
 }

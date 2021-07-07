@@ -4,14 +4,12 @@ namespace App\Command;
 
 use App\Entity\FileParser;
 use App\Entity\Product;
-use App\Repository\FileParserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Doctrine\ORM\EntityManagerInterface;
 
 class ProductsImportCommand extends Command
 {
@@ -48,23 +46,22 @@ class ProductsImportCommand extends Command
         $fileData = $this->entityManager->getRepository(FileParser::class)->loadData($filePath);    //loading CSV data
 
         if (!is_object($fileData)) {
-            $output->writeln("<error>".$fileData['error']."</error>");
+            $output->writeln('<error>'.$fileData['error'].'</error>');
+
             return self::FAILURE; // File reading error
         }
 
         $parser = new FileParser();
-        foreach ($fileData as $fileRow){
-
+        foreach ($fileData as $fileRow) {
             $product = $this->entityManager->getRepository(Product::class)->findOneBy([
-                'code' => $fileRow['Product Code']
+                'code' => $fileRow['Product Code'],
             ]);
 
-            if ($product === null){     // if product absent in database
-                if(Product::checkConditions($fileRow)) {
+            if (null === $product) {     // if product absent in database
+                if (Product::checkConditions($fileRow)) {
                     $parser->fixImportReject($fileRow, $parser::IMPORT_RULES);
                 } else {
-
-                    $product = new Product($fileRow) ;
+                    $product = new Product($fileRow);
 
                     if (!$testMode) { // NO any actions in database during  test mode
                         $this->entityManager->persist($product);
@@ -72,22 +69,21 @@ class ProductsImportCommand extends Command
                     }
                     $parser->incCounter('successCount');
                 }
-
             } else {
                 $parser->fixImportReject($fileRow, $parser::CODE_REPEATING);
             }
-            $this->processedCount++;
+            ++$this->processedCount;
             $parser->incCounter('processedCount');
         }
 
-        $output->writeln("<info>Counters:</info>");
-        $output->writeln("Records processed: ".$parser->getCounter('processedCount'));
-        $output->writeln("Records inserted: ".$parser->getCounter('successCount'));
-        $output->writeln("Records skipped: ".$parser->getCounter('skippedCount'));
+        $output->writeln('<info>Counters:</info>');
+        $output->writeln('Records processed: '.$parser->getCounter('processedCount'));
+        $output->writeln('Records inserted: '.$parser->getCounter('successCount'));
+        $output->writeln('Records skipped: '.$parser->getCounter('skippedCount'));
 
         if ($parser->getCounter('skippedCount') > 0) {
-            $output->writeln("<error>Skipped records:</error>");
-            foreach ($parser->getSkippedProducts() as $sp){
+            $output->writeln('<error>Skipped records:</error>');
+            foreach ($parser->getSkippedProducts() as $sp) {
                 $output->writeln($sp);
             }
         }

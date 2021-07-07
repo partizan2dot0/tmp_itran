@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\FileParserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Egulias\EmailValidator\Result\Reason\Reason;
-use League\Csv\Reader;
 
 /**
  * @ORM\Entity(repositoryClass=FileParserRepository::class)
@@ -19,8 +17,8 @@ class FileParser
      */
     private $id;
 
-    public const IMPORT_RULES = "Import rules restrict inserting.";
-    public const CODE_REPEATING  = "Product with this code already exist.";
+    public const IMPORT_RULES = 'Import rules restrict inserting.';
+    public const CODE_REPEATING = 'Product with this code already exist.';
 
     private $processedCount;
     private $skippedCount;
@@ -37,13 +35,13 @@ class FileParser
 
     public function incCounter($counterName): void
     {
-        $this->{$counterName}++;
+        ++$this->{$counterName};
     }
 
     public function fixImportReject(array $product, string $rejectReason): void
     {
-        $this->skippedProducts[] = $product['Product Name']." (".$product['Product Code']."). ".$rejectReason;
-        $this->skippedCount++;
+        $this->skippedProducts[] = $product['Product Name'].' ('.$product['Product Code'].'). '.$rejectReason;
+        ++$this->skippedCount;
     }
 
     public function getCounter($counterName): int
@@ -55,8 +53,4 @@ class FileParser
     {
         return $this->skippedProducts;
     }
-
 }
-
-
-

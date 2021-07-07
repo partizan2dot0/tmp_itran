@@ -12,15 +12,17 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     {
         $now = new \DateTimeImmutable('now');
 
-        $product  = (new Product())
-            ->setName('tName')
-            ->setCode('tCode')
-            ->setDescription('tdesc')
-            ->setCost(25.3)
-            ->setStock(8)
-            ->setAdded($now)
-            ->setDiscontinued($now)
-            ->setUpdated($now);
+        $productData = [
+            'Product Name' => "tName",
+            'Product Code' => "tCode",
+            'Product Description' => "tDesc",
+            'Cost in GBP' => 25.3,
+            'Stock' => 8,
+            'Discontinued' => "yes"
+        ];
+
+        $product  = new Product($productData);
+
         return $product;
     }
 
