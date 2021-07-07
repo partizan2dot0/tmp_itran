@@ -2,10 +2,8 @@
 
 namespace App\Entity;
 
-
 class ProductTest extends \PHPUnit\Framework\TestCase
 {
-
     private $product = null;
 
     private function createTestProduct()
@@ -13,15 +11,15 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $now = new \DateTimeImmutable('now');
 
         $productData = [
-            'Product Name' => "tName",
-            'Product Code' => "tCode",
-            'Product Description' => "tDesc",
+            'Product Name' => 'tName',
+            'Product Code' => 'tCode',
+            'Product Description' => 'tDesc',
             'Cost in GBP' => 25.3,
             'Stock' => 8,
-            'Discontinued' => "yes"
+            'Discontinued' => 'yes',
         ];
 
-        $product  = new Product($productData);
+        $product = new Product($productData);
 
         return $product;
     }
@@ -53,7 +51,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
     public function testSetDescription()
     {
-        $newDesc = "newDescription";
+        $newDesc = 'newDescription';
         $testProd = $this->createTestProduct()->setDescription($newDesc);
         $this->assertEquals($testProd->getDescription(), $newDesc);
     }
@@ -91,7 +89,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
     public function testSetCode()
     {
-        $newCode = "newCode";
+        $newCode = 'newCode';
         $testProd = $this->createTestProduct()->setCode($newCode);
         $this->assertEquals($testProd->getCode(), $newCode);
     }
@@ -110,7 +108,7 @@ class ProductTest extends \PHPUnit\Framework\TestCase
 
     public function testSetName()
     {
-        $newName = "newName";
+        $newName = 'newName';
         $testProd = $this->createTestProduct()->setName($newName);
         $this->assertEquals($testProd->getName(), $newName);
     }
