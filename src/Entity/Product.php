@@ -45,7 +45,7 @@ class Product
     private $stock;
 
     /**
-     * @ORM\Column(name="floatCost", type="float", nullable=true)
+     * @ORM\Column(name="intCost", type="integer", nullable=true)
      */
     private $cost;
 
@@ -119,12 +119,12 @@ class Product
 
     public function getCost(): ?float
     {
-        return $this->cost;
+        return $this->cost/100;
     }
 
     private function setCost(?float $cost): self
     {
-        $this->cost = $cost;
+        $this->cost = intval($cost*100);
 
         return $this;
     }

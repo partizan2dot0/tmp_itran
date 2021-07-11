@@ -4,12 +4,16 @@ namespace App\Command;
 
 use App\Entity\FileParser;
 use App\Entity\Product;
+use App\Repository\FileParserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Service\ProductService;
+use App\Service\FileParserService;
 
 class ProductsImportCommand extends Command
 {
@@ -17,17 +21,19 @@ class ProductsImportCommand extends Command
 
     private $entityManager;
     private $container;
+    private $productService;
+    private $fileParserService;
 
     private $processedCount = 0;
-    private $skippedCount = 0;
-    private $successCount = 0;
 
-    public function __construct(EntityManagerInterface $em, ContainerInterface $cont)
+    public function __construct(EntityManagerInterface $em, ContainerInterface $cont, ProductService $productService, FileParserService $fileParserService)
     {
         parent::__construct();
 
         $this->entityManager = $em;
         $this->container = $cont;
+        $this->productService = $productService;
+        $this->fileParserService = $fileParserService;
     }
 
     protected function configure(): void
@@ -43,7 +49,7 @@ class ProductsImportCommand extends Command
 
         $filePath = $this->container->getParameter('filepath');
 
-        $fileData = $this->entityManager->getRepository(FileParser::class)->loadData($filePath);    //loading CSV data
+        $fileData = $this->fileParserService->loadData($filePath);
 
         if (!is_object($fileData)) {
             $output->writeln('<error>'.$fileData['error'].'</error>');
@@ -53,7 +59,7 @@ class ProductsImportCommand extends Command
 
         $parser = new FileParser();
         foreach ($fileData as $fileRow) {
-            $product = $this->entityManager->getRepository(Product::class)->findOneBy([
+            $product = $this->productService->findOneBy([
                 'code' => $fileRow['Product Code'],
             ]);
 

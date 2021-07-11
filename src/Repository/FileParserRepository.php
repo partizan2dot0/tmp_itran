@@ -14,7 +14,7 @@ class FileParserRepository extends ServiceEntityRepository
         parent::__construct($registry, FileParser::class);
     }
 
-    public function loadData($filePath)
+    public function loadData(string $filePath)
     {
         if (file_exists($filePath)) {
             $reader = Reader::createFromPath($filePath);
