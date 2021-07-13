@@ -4,12 +4,9 @@ namespace App\Entity;
 
 class ProductTest extends \PHPUnit\Framework\TestCase
 {
-    private $product = null;
 
     private function createTestProduct()
     {
-        $now = new \DateTimeImmutable('now');
-
         $productData = [
             'Product Name' => 'tName',
             'Product Code' => 'tCode',
@@ -22,6 +19,21 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         $product = new Product($productData);
 
         return $product;
+    }
+
+    private function callMethod($object, string $method , array $parameters = [])
+    {
+        try {
+            $className = get_class($object);
+            $reflection = new \ReflectionClass($className);
+        } catch (\ReflectionException $e) {
+            throw new \Exception($e->getMessage());
+        }
+
+        $method = $reflection->getMethod($method);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
     }
 
     public function testGetCost()
@@ -52,14 +64,16 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     public function testSetDescription()
     {
         $newDesc = 'newDescription';
-        $testProd = $this->createTestProduct()->setDescription($newDesc);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd, 'setDescription', ['description'=> $newDesc]);
         $this->assertEquals($testProd->getDescription(), $newDesc);
     }
 
     public function testSetCost()
     {
         $newCost = 100.55;
-        $testProd = $this->createTestProduct()->setCost($newCost);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd,'setCost', ['cost'=> $newCost]);
         $this->assertEquals($testProd->getCost(), $newCost);
     }
 
@@ -71,15 +85,17 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     public function testSetUpdated()
     {
         $newUpdated = new \DateTimeImmutable('+1 day');
-        $testProd = $this->createTestProduct()->setUpdated($newUpdated);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd,'setUpdated', ['updated' => $newUpdated]);
         $this->assertEquals($testProd->getUpdated(), $newUpdated);
     }
 
     public function testSetDiscontinued()
     {
-        $newDiscounted = new \DateTimeImmutable('-1 day');
-        $testProd = $this->createTestProduct()->setDiscontinued($newDiscounted);
-        $this->assertEquals($testProd->getDiscontinued(), $newDiscounted);
+        $newDiscounted = "yes";
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd,'setDiscontinued', ['discontinued' => $newDiscounted]);
+        $this->assertNotEmpty($testProd->getDiscontinued());
     }
 
     public function testGetUpdated()
@@ -90,7 +106,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     public function testSetCode()
     {
         $newCode = 'newCode';
-        $testProd = $this->createTestProduct()->setCode($newCode);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd,'setCode', ['code' => $newCode]);
         $this->assertEquals($testProd->getCode(), $newCode);
     }
 
@@ -102,21 +119,24 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     public function testSetAdded()
     {
         $newAdded = new \DateTimeImmutable('-3 day');
-        $testProd = $this->createTestProduct()->setAdded($newAdded);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd,'setAdded', ['added' => $newAdded]);
         $this->assertEquals($testProd->getAdded(), $newAdded);
     }
 
     public function testSetName()
     {
         $newName = 'newName';
-        $testProd = $this->createTestProduct()->setName($newName);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd, 'setName', ['name' => $newName]);
         $this->assertEquals($testProd->getName(), $newName);
     }
 
     public function testSetStock()
     {
         $newStock = 333;
-        $testProd = $this->createTestProduct()->setStock($newStock);
+        $testProd = $this->createTestProduct();
+        $this->callMethod($testProd, 'setStock', ['stock' => $newStock]);
         $this->assertEquals($testProd->getStock(), $newStock);
     }
 }
